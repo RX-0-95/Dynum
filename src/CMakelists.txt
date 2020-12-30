@@ -1,0 +1,12 @@
+cmake_minimum_required(VERSION 3.12)
+
+add_library(
+    dyArray
+    dynum.cpp 
+    dynum.h
+    dyArray.h
+    dyArray.cpp
+)
+
+add_executable(dynum_test main.cpp)
+target_link_libraries(dynum_test PRIVATE dyArray)

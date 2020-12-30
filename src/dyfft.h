@@ -1,6 +1,6 @@
 #ifndef DYFFT
 #define DYFFT 
-namespace dy{
+namespace dynum{
     
     
 
