@@ -1,0 +1,8 @@
+
+add_library(
+    dynum_test_array 
+    arrayTest.h 
+    arrayTest.cpp
+    )
+
+target_include_directories(dynum_test_array  PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/../")

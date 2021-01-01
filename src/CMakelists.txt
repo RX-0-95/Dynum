@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-
+add_subdirectory(test)
 add_library(
     dyArray
     dynum.cpp 
@@ -9,4 +9,6 @@ add_library(
 )
 
 add_executable(dynum_test main.cpp)
+target_include_directories(dyArray PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/test") 
 target_link_libraries(dynum_test PRIVATE dyArray)
+target_link_libraries(dynum_test PRIVATE dynum_test_array)

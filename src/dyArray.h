@@ -57,11 +57,11 @@ namespace DyNum
     struct array
     {
         typedef _Tp value_type;
-        typedef value_type *pointer;
-        typedef const value_type *const_pointer;
-        typedef value_type &reference;
-        typedef const value_type *const_reference;
-        typedef value_type *iterator;
+        typedef value_type*     pointer;
+        typedef const value_type*   const_pointer;
+        typedef value_type&   reference;
+        typedef const value_type&   const_reference;
+        typedef value_type*   iterator;
         typedef const value_type *const_iterator;
         typedef std::size_t size_type;
         typedef std::ptrdiff_t difference_type;
@@ -70,8 +70,8 @@ namespace DyNum
 
         //support for zero size array
         typedef __array_traits<_Tp, _Nm> _AT_Type;
-        typename _AT_Type::_Type _M_elems;
-
+        typename _AT_Type::_Type _M_elems; 
+  
         //No explicit constructor/copy/descructor for aggregate type 
 
         void fill(const value_type& __u)
@@ -86,42 +86,116 @@ namespace DyNum
         //Iterators 
         constexpr iterator 
         begin()noexcept
-        {}
-
+        {return iterator(data());}
+        
         constexpr const_iterator 
         begin()const noexcept
-        {}
+        {return const_iterator(data());}
 
         constexpr iterator 
         end() noexcept
-        {}
+        {return iterator(data() + _Nm); }
 
         constexpr const_iterator 
         end() const noexcept 
-        {}
+        {return const_iterator(data() + _Nm);}
 
         constexpr reverse_iterator
         rbegin() noexcept 
-        {} 
+        {return reverse_iterator(end());} 
 
         constexpr const_reverse_iterator
         rbegin() const noexcept
-        {}
+        {return const_reverse_iterator(end());}
 
         constexpr reverse_iterator
         rend() noexcept
-        {}
+        {return reverse_iterator(begin());}
 
         constexpr const_reverse_iterator
         rend()const noexcept
-        {} 
+        {return const_reverse_iterator(begin());} 
 
+        constexpr const_iterator
+        cbegin() const noexcept
+        {return const_iterator(data());}
+
+        constexpr const_iterator
+        cend()const noexcept
+        {return const_iterator(data() + _Nm);}
+
+        constexpr const_reverse_iterator
+        crbegin() const noexcept
+        {return const_reverse_iterator(end());}
+
+        constexpr const_reverse_iterator
+        crend() const noexcept
+        {return const_reverse_iterator(begin());}
+
+        constexpr pointer
+        data() noexcept
+        {return _AT_Type::_S_ptr(_M_elems);}
+
+        constexpr const_pointer 
+        data() const noexcept 
+        {return _AT_Type::_S_ptr(_M_elems);}
 
         //Capcacity 
         constexpr size_type 
-        size() const noexcept {return _Nm; }
+        size() const noexcept 
+        {return _Nm; }
 
-        
+        constexpr size_type
+        max_size() const noexcept
+        {return _Nm;}
+
+        constexpr bool 
+        empty() const noexcept
+        {return size() == 0;}
+
+        //Element acces 
+        constexpr reference 
+        operator[] (size_type __n) noexcept
+        {return _AT_Type::_S_ref(_M_elems, __n); }
+
+        constexpr const_reference
+        operator[] (size_type __n)const noexcept 
+        {return _AT_Type::_S_ref(_M_elems, __n); }
+
+        constexpr reference
+        at(size_type __n)
+        {
+            if(__n >= _Nm)
+                std::__throw_out_of_range_fmt(__N("array::at:__n(which is %zu)" ">=_Nm (which is %zu)"),
+                __n, _Nm);
+            return _AT_Type::_S_ref(_M_elems, __n); 
+        }
+
+        constexpr const_reference
+        at(size_t __n) const
+        {
+            return __n<_Nm ? _AT_Type::_S_ref(_M_elems, __n)
+                : (std::__throw_out_of_range_fmt(__N("array const ::at:__n(which is %zu)" ">=_Nm (which is %zu)"),
+                __n, _Nm),
+            _AT_Type::_S_ref(_M_elems, 0));
+        }
+
+        constexpr reference
+        front() noexcept
+        {return *begin();}
+
+        constexpr const_reference
+        front() const noexcept
+        {return *begin();}
+
+        constexpr reference
+        back() noexcept 
+        {return *end();} 
+
+        constexpr const_reference
+        back() const noexcept
+        { return *end();} 
+
 
 
 
