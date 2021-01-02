@@ -5,7 +5,8 @@
 #include <iostream> 
 #include <stdlib.h> 
 #include "dyArray.h"
-
+#include <assert.h> 
+#include <array> 
 void testArray()
 {
     printf("Test DyArray \n");
@@ -42,10 +43,11 @@ void testArray()
 
     const auto it_begin = test_arr.begin(); 
     printf("Const iterator %p\n", it_begin);
+    DY_ASSERT(*it_begin == 1);
 
     const auto it_end = test_arr.end();
     printf("Const iterator %p\n", it_end);
-
+    DY_ASSERT(*(it_end -1)== 4); 
     printf("Reverse begin iterator %p\n", test_arr.rbegin()); 
     printf("Reverse end iterator %p\n", test_arr.rend());
 
@@ -71,7 +73,39 @@ void testArray()
         std::cerr<<"Const out of Range error: "<<oor.what()<<"\n";
     }
 
+    //printf("Test ")
  
+    printf("Test Nested array\n") ;
+    DyNum::array<DyNum::array<int,4>,2> nested_arr = {{{1,2,3,4},{5,6,7,8}}}; 
+    {
+    int t = 1;
+    for (size_t i=0; i<2;i++){
+        for (size_t j=0; j<4;j++){
+            DY_ASSERT(nested_arr[i][j]==t); 
+            t++; 
+        }
+    }
+    }
+
+    printf("Test fill function \n");
+    {
+        DyNum::array<int, 100> fill_arr;
+        fill_arr.fill(5); 
+
+        for (int i=0; i<fill_arr.size(); i++){
+            //printf("%dth element: %d", i, )
+            DY_ASSERT((fill_arr[i]==5)&&"Fill test fail");
+        } 
+    }
+
+    
+
+    
+
+
+
+    //std::array<std::array<int,4>,2> std_nested_arr = {{{1,2,3,4},{5,6,7,8}}};
+
     
     printf("End of test");
 }

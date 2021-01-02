@@ -5,6 +5,7 @@
 #include <bits/stl_algobase.h>
 #include <bits/range_access.h>
 #include <array>
+#include "dynum.h"
 
 namespace DyNum
 {
@@ -75,9 +76,7 @@ namespace DyNum
         //No explicit constructor/copy/descructor for aggregate type 
 
         void fill(const value_type& __u)
-        {
-            
-        }
+        {std::fill_n(begin(), size(), __u); }
 
         void 
         swap(array& __other)
@@ -190,22 +189,59 @@ namespace DyNum
 
         constexpr reference
         back() noexcept 
-        {return *end();} 
+        {return _Nm? *(end()-1):*end();} 
 
         constexpr const_reference
         back() const noexcept
-        { return *end();} 
-
-
-
-
-
+        { return _Nm? *(end()-1):*end();} 
 
       
     };
     
+    //Array comparisons 
+    template<typename _Tp, std::size_t  _Nm> 
+    inline bool
+    operator==(const array<_Tp,_Nm>&__one, const array<_Tp,_Nm>& __two)
+    {return std::equal(__one.begin(), __one.end(), __two.begin());}
+
+    template<typename _Tp, std::size_t _Nm> 
+    inline bool 
+    operator!=(const array<_Tp, _Nm>&__one, const array<_Tp, _Nm>&__two)
+    {return !(__one==__two); }
+
+    template <typename _Tp, std::size_t _Nm> 
+    inline bool 
+    operator<(const array<_Tp, _Nm>& __a, const array<_Tp, _Nm>& __b)
+    {
+        return std::lexicographical_compare(__a.begin(), __a.end(), 
+        __b.begin(), __b.end()); 
+    }
+
+    template <typename _Tp, std::size_t _Nm> 
+    inline bool 
+    operator>(const array<_Tp, _Nm> __a, const array<_Tp, _Nm> __b)
+    {return __b <__a; }
+
+    template<typename _Tp, std::size_t _Nm> 
+    inline bool 
+    operator<= (const array<_Tp, _Nm> __a, const array<_Tp, _Nm> __b)
+    {return !(__a > __b);}
+
+
+    template<typename _Tp, std::size_t _Nm> 
+    inline bool 
+    operator>= (const array<_Tp, _Nm> __a, const array<_Tp, _Nm> __b)
+    {return !(__a < __b);}
+
+    //Specialiuzed algorithms 
+
+
+
+
+
+
 
 
 } // namespace DyNum
 
-#endif
+#endif//DY_ARRAY_INCLUDE
