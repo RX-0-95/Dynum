@@ -4,5 +4,9 @@ add_library(
     dy_stl_algobase.h
     dy_sort.h
     dy_algorithm.cpp 
+    dy_fft.h
+    dy_fft.cpp
+    
 )
 
+target_include_directories(dy_algorithm PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/../")
