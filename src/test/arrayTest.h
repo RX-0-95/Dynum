@@ -7,6 +7,7 @@
 #include "dyArray.h"
 #include <assert.h> 
 #include <array> 
+#include "dy_algobase.h"
 void testArray()
 {
     printf("Test DyArray \n");
@@ -22,6 +23,7 @@ void testArray()
     printf("const cask const variable a\n"); 
     int& casked_const_a = const_cast<int&> (const_a); 
      
+    
     printf("casked const_a: %d\n", casked_const_a);
     casked_const_a  = 4; 
     printf("const_a: %d\n", const_a); 
@@ -96,18 +98,39 @@ void testArray()
             //printf("%dth element: %d", i, )
             DY_ASSERT((fill_arr[i]==5)&&"Fill test fail");
         } 
+        printf("Fill function passed\n"); 
     }
 
-    
+    {
+        printf("Array Swap Test\n");
+        DyNum::array<int, 4> swap_arr1 = {1,2,3,4};
+        DyNum::array<int, 4> swap_arr2 = {5,6,7,8};
+        DyNum::array<int, 4> swap_arr_1_copy = {1,2,3,4};
+        DyNum::array<int, 4> swap_arr_2_copy = {5,6,7,8};
+        swap_arr1.swap(swap_arr2); 
+        for (int i=0; i<swap_arr2.size(); i++)
+        {
+            printf(" %d", swap_arr2[i]);
+        }
+        DY_ASSERT(swap_arr2==swap_arr_1_copy);
+        DY_ASSERT(swap_arr1==swap_arr_2_copy); 
+        
+        DyNum::swap(swap_arr1, swap_arr2); 
+        //swap_arr1.swap(swap_arr2); 
+        for (int i=0; i<swap_arr2.size(); i++)
+        {
+            printf(" %d", swap_arr2[i]);
+        }
+        printf("\n"); 
+        DY_ASSERT(swap_arr2==swap_arr_2_copy);
+        DY_ASSERT(swap_arr1==swap_arr_1_copy); 
+        printf("Pass Array Swap Test\n");
 
-    
-
-
-
+    }
     //std::array<std::array<int,4>,2> std_nested_arr = {{{1,2,3,4},{5,6,7,8}}};
 
     
-    printf("End of test");
+    printf("End of test\n");
 }
 
 

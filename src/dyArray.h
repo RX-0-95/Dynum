@@ -2,22 +2,23 @@
 #define DY_ARRAY_INCLUDE 1
 #include <stdexcept> //no except
 #include <utility>
-#include <bits/stl_algobase.h>
-#include <bits/range_access.h>
-#include <array>
+//#include <bits/stl_algobase.h>
+//#include <bits/range_access.h>
 #include "dynum.h"
+#include "dy_stl_algobase.h"
 
 namespace DyNum
 {
+   
     //dynum array class, hold data in t
     template <typename _Tp, size_t _Nm>
     struct __array_traits
     {
         typedef _Tp _Type[_Nm];
         typedef std::__is_swappable<_Tp> _Is_swappable;
-        typedef std::__is_nothrow_swappable<_Tp> __is_nothrow_swappable;
-
-        static constexpr _Tp&
+        typedef std::__is_nothrow_swappable<_Tp> _Is_nothrow_swappable;
+       
+        static constexpr _Tp& 
         _S_ref(const _Type& __t, std::size_t __n) noexcept
         {return const_cast<_Tp&>(__t[__n]);}
 
@@ -32,8 +33,8 @@ namespace DyNum
         struct _Type
         {
         };
-        typedef std::true_type _is_swappable;
-        typedef std::true_type is_nothrow_swappable;
+        typedef std::true_type _Is_swappable;
+        typedef std::true_type _Is_nothrow_swappable;
 
         static constexpr _Tp &_S_ref(const _Type &, std::size_t) noexcept
         {
@@ -70,7 +71,7 @@ namespace DyNum
         typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
         //support for zero size array
-        typedef __array_traits<_Tp, _Nm> _AT_Type;
+        typedef DyNum::__array_traits<_Tp, _Nm> _AT_Type;
         typename _AT_Type::_Type _M_elems; 
   
         //No explicit constructor/copy/descructor for aggregate type 
@@ -80,7 +81,8 @@ namespace DyNum
 
         void 
         swap(array& __other)
-        {}
+        noexcept(_AT_Type::_Is_nothrow_swappable::value)
+        {DyNum::swap_ranges(begin(), end(), __other.begin());}
 
         //Iterators 
         constexpr iterator 
@@ -234,6 +236,20 @@ namespace DyNum
     {return !(__a < __b);}
 
     //Specialiuzed algorithms 
+    template<typename _Tp, std::size_t _Nm> 
+    inline 
+    
+    #if __cplusplus > 201402L
+        typename enable_if<
+        DyNum::__array_traits<_Tp, _Nm>::_Is_swappable::value>::type
+    #else
+        void 
+    #endif
+        swap(array<_Tp, _Nm>& __one, array<_Tp, _Nm> __two)
+        noexcept
+        {__one.swap(__two);}
+
+
 
 
 

@@ -1,0 +1,8 @@
+add_library(
+    dy_algorithm
+    dy_algobase.h
+    dy_stl_algobase.h
+    dy_sort.h
+    dy_algorithm.cpp 
+)
+
