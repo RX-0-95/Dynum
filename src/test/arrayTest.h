@@ -115,7 +115,7 @@ void testArray()
         DY_ASSERT(swap_arr2==swap_arr_1_copy);
         DY_ASSERT(swap_arr1==swap_arr_2_copy); 
         
-        DyNum::swap(swap_arr1, swap_arr2); 
+        swap(swap_arr1, swap_arr2); 
         //swap_arr1.swap(swap_arr2); 
         for (int i=0; i<swap_arr2.size(); i++)
         {

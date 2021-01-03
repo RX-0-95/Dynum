@@ -245,7 +245,7 @@ namespace DyNum
     #else
         void 
     #endif
-        swap(array<_Tp, _Nm>& __one, array<_Tp, _Nm> __two)
+        swap(array<_Tp, _Nm>& __one, array<_Tp, _Nm> &__two)
         noexcept
         {__one.swap(__two);}
 
