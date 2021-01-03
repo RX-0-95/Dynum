@@ -77,10 +77,10 @@ namespace DyNum
         //No explicit constructor/copy/descructor for aggregate type 
 
         void fill(const value_type& __u)
-        {std::fill_n(begin(), size(), __u); }
+        {std::fill_n(begin(),size(), __u); }
 
         void 
-        swap(array& __other)
+        swap(array& __other) 
         noexcept(_AT_Type::_Is_nothrow_swappable::value)
         {DyNum::swap_ranges(begin(), end(), __other.begin());}
 
@@ -166,19 +166,33 @@ namespace DyNum
         constexpr reference
         at(size_type __n)
         {
-            if(__n >= _Nm)
-                std::__throw_out_of_range_fmt(__N("array::at:__n(which is %zu)" ">=_Nm (which is %zu)"),
-                __n, _Nm);
-            return _AT_Type::_S_ref(_M_elems, __n); 
+            #if defined(__clang__)
+                if(__n>=_Nm)
+                    __throw_out_of_range("array::at");
+                return _AT_Type::_S_ref(_M_elems,__n); 
+                #elif defined(__GNUC__)
+            
+                return __n<_Nm ? _AT_Type::_S_ref(_M_elems, __n)
+                    : (std::__throw_out_of_range_fmt(__N("array const ::at:__n(which is %zu)" ">=_Nm (which is %zu)"),
+                    __n, _Nm),
+                _AT_Type::_S_ref(_M_elems, 0));
+            #endif
         }
 
         constexpr const_reference
         at(size_t __n) const
         {
-            return __n<_Nm ? _AT_Type::_S_ref(_M_elems, __n)
-                : (std::__throw_out_of_range_fmt(__N("array const ::at:__n(which is %zu)" ">=_Nm (which is %zu)"),
-                __n, _Nm),
-            _AT_Type::_S_ref(_M_elems, 0));
+            #if defined(__clang__)
+                if(__n>=_Nm)
+                    __throw_out_of_range("array::at");
+                return _AT_Type::_S_ref(_M_elems,__n); 
+                #elif defined(__GNUC__)
+            
+                return __n<_Nm ? _AT_Type::_S_ref(_M_elems, __n)
+                    : (std::__throw_out_of_range_fmt(__N("array const ::at:__n(which is %zu)" ">=_Nm (which is %zu)"),
+                    __n, _Nm),
+                _AT_Type::_S_ref(_M_elems, 0));
+            #endif
         }
 
         constexpr reference
@@ -249,15 +263,77 @@ namespace DyNum
         noexcept
         {__one.swap(__two);}
 
+    template<std::size_t _Int, typename _Tp, std::size_t _Nm>
+    constexpr _Tp& 
+    get(array<_Tp, _Nm>& __arr) noexcept
+    {
+        static_assert(_Int <_Nm, "array index is within bounds"); 
+        printf("regular assign\n");
+        return DyNum::__array_traits<_Tp,_Nm>::
+        _S_ref(__arr._M_elems, _Int); 
+    }
+    //rvalue reference get 
+    template<std::size_t _Int, typename _Tp, std::size_t _Nm> 
+    constexpr _Tp&&
+    get(array<_Tp,_Nm>&&__arr) noexcept
+    {
+        printf("rvalue reference \n");
+        static_assert(_Int<_Nm, "array index is within bounds");
+        return std::move(DyNum::get<_Int>(__arr)); 
+        
+    }
 
-
-
-
-
-
-
-
+    template<std::size_t _Int, typename _Tp, std::size_t _Nm>
+    constexpr const _Tp& 
+    get(const array<_Tp, _Nm>& __arr) noexcept
+    {
+        static_assert(_Int <_Nm, "array index is out of bounds"); 
+        return DyNum::__array_traits<_Tp,_Nm>::
+        _S_ref(__arr._M_elems, _Int); 
+    }
+    //rvalue reference get 
+    template<std::size_t _Int, typename _Tp, std::size_t _Nm> 
+    constexpr const _Tp&&
+    get(const array<_Tp,_Nm>&&__arr) noexcept
+    {
+        static_assert(_Int<_Nm, "array index is out of bounds");
+        return std::move(DyNum::get<_Int>(__arr)); 
+    }
 
 } // namespace DyNum
+
+namespace DyNum
+{
+// Tuple interface to class template array 
+
+///tuple_size 
+template<typename _Tp> 
+struct tuple_size; 
+
+///patial specialization of array 
+template<typename _Tp, std::size_t _Nm> 
+struct  tuple_size<DyNum::array<_Tp, _Nm>>
+    :public integral_constant<std::size_t, _Nm>{};
+
+///tuple_element 
+template<std::size_t _Int, typename _Tp> 
+struct tuple_element; 
+
+///Partial specialization for array 
+template<std::size_t _Int, typename _Tp, std::size_t _Nm> 
+struct  tuple_element<_Int, DyNum::array<_Tp, _Nm>>
+{
+    static_assert(_Int<_Nm, "index is out of bounds"); 
+    typedef _Tp type; 
+};
+
+//template<typename _Tp, std::size_t _Nm> 
+//struct __is_tuple_like_impl<DyNum::array<_Tp,_Nm>>:true_type 
+//{ }; 
+
+
+}//namespace DyNum 
+
+
 
 #endif//DY_ARRAY_INCLUDE

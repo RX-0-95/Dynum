@@ -7,11 +7,12 @@ add_library(
     dyArray.h
     dyArray.cpp
 )
+target_compile_features(dyArray PUBLIC cxx_std_14)
 add_subdirectory(test)
 add_subdirectory(algorithm)
 
 add_executable(dynum_test main.cpp )
-set (CMAKE_CXX_STANDARD 17)
+
 #mpile_features(dynum_test PRIVATE CXX_STANDARD 11)
 target_include_directories(dyArray PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/test") 
 target_include_directories(dyArray PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/algorithm")

@@ -10,6 +10,7 @@
 #include "dy_algobase.h"
 void testArray()
 {
+    
     printf("Test DyArray \n");
     std::printf("Start alloc");  
  
@@ -128,8 +129,16 @@ void testArray()
 
     }
     //std::array<std::array<int,4>,2> std_nested_arr = {{{1,2,3,4},{5,6,7,8}}};
+    {
+        printf("get test \n"); 
+        DyNum::array<int, 4> get_arr = {1,2,3,4}; 
+        DyNum::array<int, 4> get_arr2 = {1,2,3,4}; 
+        int&& c = DyNum::get<0>(std::move(get_arr)); 
+        printf("get_arr after move: %d\n", c);
 
-    
+
+    }
+   
     printf("End of test\n");
 }
 
